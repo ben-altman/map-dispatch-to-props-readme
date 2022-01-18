@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
+import { addTodo } from './actions/todo';
 
 class App extends Component {
 
   state = {
     todo: ''
+  }
+
+  addTodo = () => {
+    return ({
+      type: 'ADD_TODO',
+      todo: this.state.todo
+    })
   }
 
   handleOnChange = event => {
@@ -17,11 +25,12 @@ class App extends Component {
   handleOnSubmit = event => {
     event.preventDefault();
     console.log("Todo being added: ", this.state.todo);
-    this.props.dispatch({ type: 'ADD_TODO', todo: this.state.todo });
+    this.props.addTodo(this.state.todo); //Code Change: using our action creator method instead of passing in action directly.
     this.setState({ todo: '' });
   }
 
   render() {
+    // debugger;
     const renderTodos = () => this.props.todos.map(todo => <li key={todo}>{todo}</li>);
     return (
       <div className="App">
@@ -41,10 +50,22 @@ class App extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
-  return {
-    todos: state.todos
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     todos: state.todos
+//   };
+// };
 
-export default connect(mapStateToProps)(App);
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     addTodo: (todo) => {
+//       dispatch(addTodo(todo))
+//     }
+//   };
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+// export default connect(mapStateToProps, { addTodo })(App); // code change: no mapDispatchToProps required
+
+export default connect(state => ({ todos: state.todoes }), { addTodo })(App);
